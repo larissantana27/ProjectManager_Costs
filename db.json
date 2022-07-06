@@ -13,7 +13,7 @@
     },
     {
       "name": "Test 2",
-      "budget": "1000",
+      "budget": "30000",
       "category": {
         "id": "3",
         "name": "Design"
@@ -43,28 +43,6 @@
       "cost": 0,
       "services": [],
       "id": 4
-    },
-    {
-      "name": "Test 5",
-      "budget": "2132",
-      "category": {
-        "id": "1",
-        "name": "Infrastructure"
-      },
-      "cost": 0,
-      "services": [],
-      "id": 5
-    },
-    {
-      "name": "Test 5",
-      "budget": "32842",
-      "category": {
-        "id": "1",
-        "name": "Infrastructure"
-      },
-      "cost": 0,
-      "services": [],
-      "id": 6
     }
   ],
   "categories": [

@@ -5,7 +5,7 @@ import styles from './Projects.module.css'
 
 import ProjectCard from '../project/ProjectCard'
 import Container from '../layout/Container'
-//import Loading from '../layout/Loading'
+import Loading from '../layout/Loading'
 import LinkButton from '../layout/LinkButton'
 import Message from '../layout/Message'
 
@@ -13,29 +13,52 @@ import Message from '../layout/Message'
 function Projects() {
 
   const [projects, setProjects] = useState([])
-  //const [removeLoading, setRemoveLoading] = useState(false)
-  //const [projectMessage, setProjectMessage] = useState('')
-
-  const location = useLocation()
+  const [removeLoading, setRemoveLoading] = useState(false)
+  const [projectMessage, setProjectMessage] = useState('')
 
   let message = ''
+
+  const location = useLocation()
   
   if (location.state) {
     message = location.state.message
   }
 
-  fetch('http://localhost:5000/projects', 
-    {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json', } ,
-    }
+  useEffect(() => {
+    setTimeout(() => { 
+      fetch('http://localhost:5000/projects', 
+      {
+          method: 'GET',
+          headers: {'Content-Type': 'application/json', } ,
+      }
           )
           .then((resp) => resp.json())
           .then((data) => {
             console.log(data)
             setProjects(data)
+            setRemoveLoading(true)
           })  
           .catch((error) => console.log(error))
+    }, 1000)
+  }, [])
+  
+
+  function removeProject(id) {
+
+    setProjectMessage('')
+
+    fetch(`http://localhost:5000/projects/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((resp) => resp.json())
+      .then(
+        setProjects(projects.filter((project) => project.id !== id)),
+        setProjectMessage('Project sucessfully removed!')
+      )
+  }
 
   return (
 
@@ -47,6 +70,7 @@ function Projects() {
       </div>
 
       {message && <Message type = "success" message = {message} />}
+      {projectMessage && <Message type = "success" message = {projectMessage} />}
       
       <Container customClass = "start">
   
@@ -58,10 +82,16 @@ function Projects() {
               budget={project.budget}
               category={project.category.name}
               key={project.id}
-              //handleRemove={removeProject}
+              handleRemove={removeProject}
             />
           ))}
         
+        {!removeLoading && <Loading />}
+
+        {removeLoading && projects.length === 0 && (
+          <p>There are no projects registered!</p>
+        )}
+
       </Container>
 
     </div>
@@ -70,12 +100,3 @@ function Projects() {
 
 export default Projects
 
-//{projectMessage && <Message type = "success" message = {projectMessage} />}
-
-/*
-        {!removeLoading && <Loading />}
-
-        {removeLoading && projects.length === 0 && (
-          <p>Não há projetos cadastrados!</p>
-        )}
-        */
